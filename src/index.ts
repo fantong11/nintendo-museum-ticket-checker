@@ -27,7 +27,7 @@ if (!notifier) {
 
 async function runCheck(): Promise<void> {
   console.log(`\n${"=".repeat(60)}`);
-  console.log(`[Main] Checking tickets at ${new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })}`);
+  console.log(`[Main] Checking tickets at ${new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei", hour12: false })}`);
   console.log("=".repeat(60));
 
   const statuses = await checker.check();
