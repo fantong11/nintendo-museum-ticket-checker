@@ -19,7 +19,7 @@ export class PuppeteerTicketChecker implements ITicketChecker {
     });
     try {
       const page = await browser.newPage();
-      await page.goto(CALENDAR_URL, { waitUntil: "networkidle2", timeout: 30000 });
+      await page.goto(CALENDAR_URL, { waitUntil: "networkidle2", timeout: 60000 });
 
       // Wait for FullCalendar to render
       await page.waitForSelector(".fc-daygrid-day", { timeout: 15000 });
