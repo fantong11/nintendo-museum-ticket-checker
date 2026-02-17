@@ -1,5 +1,5 @@
 {
-  "name": "nintendo-museum-cronjob",
+  "name": "nintendo-museum-ticket-checker",
   "version": "1.0.0",
   "description": "Nintendo Museum ticket availability checker with email notifications",
   "main": "dist/index.js",

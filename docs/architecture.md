@@ -11,7 +11,7 @@ It supports two execution modes:
 ## Project Structure
 
 ```
-nintendo-museum-cronjob/
+nintendo-museum-ticket-checker/
 ├── src/
 │   ├── index.ts                         # Entry point (mode selection, DI wiring)
 │   ├── interfaces/
