@@ -20,6 +20,8 @@ nintendo-museum-cronjob/
 │   │   └── IScheduler.ts               # start(job) / stop()
 │   ├── models/
 │   │   └── TicketStatus.ts              # { date, day, available }
+│   ├── utils/
+│   │   └── parseDates.ts                # Parse TARGET_DATES env var format
 │   └── services/
 │       ├── PuppeteerTicketChecker.ts     # Headless Chromium scraping
 │       ├── EmailNotifier.ts             # Gmail SMTP notifications
@@ -92,4 +94,5 @@ The `--once` mode is designed for Kubernetes CronJob, where the scheduler handle
 | `GMAIL_USER` | Gmail address for sending notifications | Yes (for email) |
 | `GMAIL_APP_PASSWORD` | Gmail App Password (not regular password) | Yes (for email) |
 | `NOTIFY_EMAIL` | Recipient email address(es), comma-separated for multiple | No (defaults to `fankaihsiang11@gmail.com`) |
+| `TARGET_DATES` | Target dates to check. Comma-separated, supports ranges with `~`. Example: `2026-03-17~2026-03-23,2026-04-05` | Yes |
 | `PUPPETEER_EXECUTABLE_PATH` | Path to Chromium binary | No (set automatically in Docker) |

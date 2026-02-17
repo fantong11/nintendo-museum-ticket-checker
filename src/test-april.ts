@@ -2,11 +2,13 @@ import dotenv from "dotenv";
 import puppeteer from "puppeteer";
 import { EmailNotifier } from "./services/EmailNotifier";
 import { TicketStatus } from "./models/TicketStatus";
+import { parseDates } from "./utils/parseDates";
 
 dotenv.config();
 
 (async () => {
-  console.log("Checking April 13-17 for available tickets...");
+  const dates = parseDates("2026-04-01~2026-04-30");
+  console.log(`Checking ${dates.length} dates in April for available tickets...`);
 
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
@@ -17,11 +19,10 @@ dotenv.config();
   await page.waitForSelector(".fc-daygrid-day", { timeout: 15000 });
   await new Promise((r) => setTimeout(r, 3000));
 
-  const days = Array.from({ length: 30 }, (_, i) => i + 1);
-  const statuses = await page.evaluate((targetDays: number[]) => {
+  const statuses = await page.evaluate((targetDates: string[]) => {
     const results: { date: string; day: number; available: boolean; status: string }[] = [];
-    for (const day of targetDays) {
-      const dateStr = `2026-04-${String(day).padStart(2, "0")}`;
+    for (const dateStr of targetDates) {
+      const day = parseInt(dateStr.split("-")[2], 10);
       const allCells = Array.from(document.querySelectorAll(`td[data-date="${dateStr}"]`));
       const cell = allCells.find((td) => !td.classList.contains("fc-day-other"));
       if (!cell) {
@@ -38,7 +39,7 @@ dotenv.config();
       results.push({ date: dateStr, day, available: !isSoldOut && !isHoliday && !isNoData, status });
     }
     return results;
-  }, days);
+  }, dates);
 
   await browser.close();
 
@@ -53,7 +54,7 @@ dotenv.config();
     const notifier = new EmailNotifier(
       process.env.GMAIL_USER!,
       process.env.GMAIL_APP_PASSWORD!,
-      process.env.NOTIFY_EMAIL || "fankaihsiang11@gmail.com"
+      process.env.NOTIFY_EMAIL!
     );
     await notifier.notify(available);
     console.log("Done!");

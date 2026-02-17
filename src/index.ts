@@ -5,24 +5,34 @@ import { CronScheduler } from "./services/CronScheduler";
 import { ITicketChecker } from "./interfaces/ITicketChecker";
 import { INotifier } from "./interfaces/INotifier";
 import { IScheduler } from "./interfaces/IScheduler";
+import { parseDates } from "./utils/parseDates";
 
 dotenv.config();
 
 const gmailUser = process.env.GMAIL_USER;
 const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
-const notifyEmail = process.env.NOTIFY_EMAIL || "fankaihsiang11@gmail.com";
+const notifyEmail = process.env.NOTIFY_EMAIL;
+
+const targetDatesRaw = process.env.TARGET_DATES;
+if (!targetDatesRaw) {
+  console.error("[Main] TARGET_DATES environment variable is required.");
+  console.error("[Main] Example: TARGET_DATES=2026-03-17~2026-03-23,2026-04-05");
+  process.exit(1);
+}
+const targetDates = parseDates(targetDatesRaw);
+console.log(`[Main] Target dates: ${targetDates.join(", ")}`);
 
 // Dependency injection
-const checker: ITicketChecker = new PuppeteerTicketChecker();
+const checker: ITicketChecker = new PuppeteerTicketChecker(targetDates);
 
 const notifier: INotifier | null =
-  gmailUser && gmailAppPassword
+  gmailUser && gmailAppPassword && notifyEmail
     ? new EmailNotifier(gmailUser, gmailAppPassword, notifyEmail)
     : null;
 
 if (!notifier) {
-  console.warn("[Main] Gmail credentials not configured. Email notifications disabled.");
-  console.warn("[Main] Set GMAIL_USER and GMAIL_APP_PASSWORD in .env to enable.");
+  console.warn("[Main] Email credentials not fully configured. Notifications disabled.");
+  console.warn("[Main] Set GMAIL_USER, GMAIL_APP_PASSWORD, and NOTIFY_EMAIL in .env to enable.");
 }
 
 async function runCheck(): Promise<void> {

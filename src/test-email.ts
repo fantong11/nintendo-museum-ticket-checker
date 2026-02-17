@@ -5,7 +5,7 @@ dotenv.config();
 
 const gmailUser = process.env.GMAIL_USER!;
 const gmailAppPassword = process.env.GMAIL_APP_PASSWORD!;
-const notifyEmail = process.env.NOTIFY_EMAIL || "fankaihsiang11@gmail.com";
+const notifyEmail = process.env.NOTIFY_EMAIL!;
 
 const notifier = new EmailNotifier(gmailUser, gmailAppPassword, notifyEmail);
 
