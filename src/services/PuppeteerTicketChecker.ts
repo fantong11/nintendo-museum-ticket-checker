@@ -9,7 +9,11 @@ const TARGET_DAYS = [17, 18, 19, 20, 21, 22, 23];
 
 export class PuppeteerTicketChecker implements ITicketChecker {
   async check(): Promise<TicketStatus[]> {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    });
     try {
       const page = await browser.newPage();
       await page.goto(CALENDAR_URL, { waitUntil: "networkidle2", timeout: 30000 });

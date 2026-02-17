@@ -17,7 +17,7 @@ dotenv.config();
   await page.waitForSelector(".fc-daygrid-day", { timeout: 15000 });
   await new Promise((r) => setTimeout(r, 3000));
 
-  const days = [13, 14, 15, 16, 17];
+  const days = Array.from({ length: 30 }, (_, i) => i + 1);
   const statuses = await page.evaluate((targetDays: number[]) => {
     const results: { date: string; day: number; available: boolean; status: string }[] = [];
     for (const day of targetDays) {

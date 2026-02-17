@@ -12,7 +12,27 @@
       "Bash(npm --version)",
       "Bash(npx tsc)",
       "Bash(npm run check:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(minikube status:*)",
+      "Bash(docker:*)",
+      "Bash(kubectl version:*)",
+      "Bash(/c/Program Files/nodejs/node.exe --version)",
+      "Bash(/c/Program Files/nodejs/npm.cmd --version)",
+      "Bash(cmd.exe /c \"where minikube 2>NUL && where kubectl 2>NUL && where docker 2>NUL\")",
+      "Bash(export PATH=\"$PATH:/c/Program Files/Docker/Docker/resources/bin:/c/Program Files/Kubernetes/Minikube:/c/Program Files/nodejs:/c/Users/fanka/AppData/Roaming/npm\")",
+      "Bash(minikube version:*)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/Docker/Docker/resources/bin:/c/Program Files/Kubernetes/Minikube\")",
+      "Bash(cmd.exe /c \"where minikube\")",
+      "Bash(cmd.exe /c \"minikube status\")",
+      "Bash(export PATH=\"$PATH:/c/Program Files/Kubernetes/Minikube\")",
+      "Bash(minikube start:*)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/Kubernetes/Minikube:/c/Program Files/Docker/Docker/resources/bin\")",
+      "Bash(kubectl create secret:*)",
+      "Bash(kubectl apply:*)",
+      "Bash(kubectl get:*)",
+      "Bash(kubectl wait:*)",
+      "Bash(kubectl logs:*)",
+      "Bash(kubectl delete:*)"
     ]
   }
 }
