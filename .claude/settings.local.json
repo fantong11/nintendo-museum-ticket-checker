@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:museum-tickets.nintendo.com)",
+      "Bash(npm install:*)",
+      "Bash(where:*)",
+      "Bash(echo:*)",
+      "Bash(cmd.exe /c \"where node\")",
+      "Bash(cmd.exe /c \"where npm\")",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs:/c/Users/fanka/AppData/Roaming/npm\")",
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(npx tsc)",
+      "Bash(npm run check:*)",
+      "Bash(node:*)"
+    ]
+  }
+}
