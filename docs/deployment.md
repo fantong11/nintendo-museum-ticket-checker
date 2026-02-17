@@ -69,23 +69,10 @@ Launch Docker Desktop from the Start Menu and wait until the icon shows "Running
 minikube start --driver=docker
 ```
 
-### Step 3: Configure Secrets
-
-Generate base64-encoded values:
+### Step 3: Create ConfigMap from `.env`
 
 ```bash
-echo -n 'your-gmail@gmail.com' | base64
-echo -n 'your-app-password' | base64
-echo -n 'a@example.com,b@example.com' | base64
-```
-
-Edit `k8s/secret.yaml` and paste the encoded values:
-
-```yaml
-data:
-  GMAIL_USER: "eW91ci1nbWFpbEBnbWFpbC5jb20="
-  GMAIL_APP_PASSWORD: "eW91ci1hcHAtcGFzc3dvcmQ="
-  NOTIFY_EMAIL: "YUBleGFtcGxlLmNvbSxiQGV4YW1wbGUuY29t"
+kubectl create configmap nintendo-ticket-checker-env --from-env-file=.env
 ```
 
 ### Step 4: Build the Docker Image
@@ -103,8 +90,7 @@ kubectl apply -f k8s/
 ```
 
 This creates:
-- A `Secret` with Gmail credentials
-- A `CronJob` that runs every hour
+- A `CronJob` that runs every 10 minutes
 
 ### Step 6: Verify
 
@@ -165,12 +151,12 @@ minikube image build -t nintendo-ticket-checker:latest .
 # Existing CronJob will use the new image on next run (imagePullPolicy: Never)
 ```
 
-### Update secrets
+### Update environment variables
 
-Edit `k8s/secret.yaml` with new base64 values, then:
+Edit `.env`, then recreate the ConfigMap:
 
 ```bash
-kubectl apply -f k8s/secret.yaml
+kubectl create configmap nintendo-ticket-checker-env --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 ### Pause / Resume the CronJob
@@ -201,7 +187,7 @@ minikube stop
 
 | Setting | Value | Description |
 |---------|-------|-------------|
-| `schedule` | `0 * * * *` | Every hour at minute 0 |
+| `schedule` | `*/10 * * * *` | Every 10 minutes |
 | `concurrencyPolicy` | `Forbid` | Skip if previous job is still running |
 | `backoffLimit` | `2` | Retry failed jobs up to 2 times |
 | `restartPolicy` | `OnFailure` | Restart container on failure |
@@ -221,7 +207,7 @@ kubectl logs <pod-name>
 ```
 
 Common causes:
-- Missing or invalid secrets — check `kubectl get secret nintendo-ticket-checker-secrets -o yaml`
+- Missing or invalid ConfigMap — check `kubectl get configmap nintendo-ticket-checker-env -o yaml`
 - Chromium crash — may need more memory, increase limits in `k8s/cronjob.yaml`
 
 ### Image not found

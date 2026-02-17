@@ -32,7 +32,8 @@
       "Bash(kubectl get:*)",
       "Bash(kubectl wait:*)",
       "Bash(kubectl logs:*)",
-      "Bash(kubectl delete:*)"
+      "Bash(kubectl delete:*)",
+      "Bash(kubectl create configmap:*)"
     ]
   }
 }

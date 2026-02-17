@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: nintendo-ticket-checker
 spec:
-  schedule: "1 * * * *"
+  schedule: "*/10 * * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
@@ -18,8 +18,8 @@ spec:
               imagePullPolicy: Never
               command: ["node", "dist/index.js", "--once"]
               envFrom:
-                - secretRef:
-                    name: nintendo-ticket-checker-secrets
+                - configMapRef:
+                    name: nintendo-ticket-checker-env
               resources:
                 requests:
                   memory: "256Mi"

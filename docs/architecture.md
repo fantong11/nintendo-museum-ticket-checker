@@ -25,8 +25,7 @@ nintendo-museum-cronjob/
 │       ├── EmailNotifier.ts             # Gmail SMTP notifications
 │       └── CronScheduler.ts             # node-cron wrapper
 ├── k8s/
-│   ├── cronjob.yaml                     # Kubernetes CronJob manifest
-│   └── secret.yaml                      # Kubernetes Secret template
+│   └── cronjob.yaml                     # Kubernetes CronJob manifest
 ├── Dockerfile                           # Multi-stage build
 ├── .dockerignore
 ├── package.json
