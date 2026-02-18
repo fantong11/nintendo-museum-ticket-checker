@@ -30,7 +30,15 @@ export class EmailNotifier implements INotifier {
 
   async notify(availableTickets: TicketStatus[]): Promise<void> {
     const count = availableTickets.length;
-    const dateList = availableTickets.map((t) => `  - ${formatDate(t.date)}`).join("\n");
+    const dateList = availableTickets
+      .map((t) => {
+        const slotLine =
+          t.timeSlots && t.timeSlots.length > 0
+            ? `\n    Slots: ${t.timeSlots.join(", ")}`
+            : "";
+        return `  - ${formatDate(t.date)}${slotLine}`;
+      })
+      .join("\n");
     const checkedAt = new Date().toLocaleString("en-US", {
       timeZone: "Asia/Tokyo",
       year: "numeric",
@@ -90,6 +98,17 @@ export class EmailNotifier implements INotifier {
                   const month = d.toLocaleString("en-US", { month: "short" });
                   const isWeekend = d.getDay() === 0 || d.getDay() === 6;
                   const dotColor = isWeekend ? "#e60012" : "#1a8d1a";
+                  const slotsHtml =
+                    t.timeSlots && t.timeSlots.length > 0
+                      ? `<tr><td colspan="2" style="padding:0 16px 10px; font-size:12px; color:#555;">
+                          ${t.timeSlots
+                            .map(
+                              (s) =>
+                                `<span style="display:inline-block; background:#e8f5e9; color:#1a8d1a; border:1px solid #c8e6c9; border-radius:4px; padding:2px 8px; margin:2px 4px 2px 0; font-weight:600; font-family:monospace;">${s}</span>`
+                            )
+                            .join("")}
+                        </td></tr>`
+                      : "";
                   return `
               <tr>
                 <td style="padding:6px 0;">
@@ -100,9 +119,10 @@ export class EmailNotifier implements INotifier {
                         <span style="font-size:13px; color:#888; margin-left:8px;">${weekday}</span>
                       </td>
                       <td align="right" style="padding:12px 16px;">
-                        <span style="display:inline-block; background:${dotColor}; color:#fff; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px; text-transform:uppercase;">Available</span>
+                        <span style="display:inline-block; background:#1a8d1a; color:#fff; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px; text-transform:uppercase;">Available</span>
                       </td>
                     </tr>
+                    ${slotsHtml}
                   </table>
                 </td>
               </tr>`;

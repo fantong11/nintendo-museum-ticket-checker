@@ -5,7 +5,8 @@ Automatically checks [Nintendo Museum](https://museum-tickets.nintendo.com/en/ca
 ## Features
 
 - Scrapes the Nintendo Museum booking calendar using Puppeteer (headless Chromium)
-- Sends styled HTML email notifications via Gmail SMTP
+- Scrapes available **time slots** per date (e.g. `16:00 - 16:30`) without requiring login
+- Sends styled HTML email notifications via Gmail SMTP, with time slot pills per date card
 - Runs as a Kubernetes CronJob (every 10 minutes) or standalone via `node-cron`
 
 ## Quick Start
@@ -38,6 +39,15 @@ npm run check
 
 # Scheduled mode (runs every hour via node-cron)
 npm start
+
+# Test email rendering with mock data
+npm run test-email
+
+# Test full April scrape (calendar + time slots) and send real email
+npm run test-april
+
+# Debug time slot scraping for a single date (saves debug-*.png / .html)
+DEBUG_SLOTS=1 npm run debug-slots
 ```
 
 ## Deploy to Minikube

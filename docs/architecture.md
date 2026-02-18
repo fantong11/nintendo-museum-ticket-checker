@@ -19,7 +19,7 @@ nintendo-museum-ticket-checker/
 │   │   ├── INotifier.ts                 # notify(availableTickets) → void
 │   │   └── IScheduler.ts               # start(job) / stop()
 │   ├── models/
-│   │   └── TicketStatus.ts              # { date, day, available }
+│   │   └── TicketStatus.ts              # { date, day, available, timeSlots? }
 │   ├── utils/
 │   │   └── parseDates.ts                # Parse TARGET_DATES env var format
 │   └── services/
@@ -59,13 +59,23 @@ nintendo-museum-ticket-checker/
                         │                        │
                         v                        v
                Chromium (headless)         Gmail SMTP
-               Scrapes calendar            Sends HTML email
+               Phase 1: calendar           Sends HTML email
+               Phase 2: time slots         with slot pills
 ```
 
 ## Key Design Decisions
 
 ### Dependency Injection via Interfaces
 All core components implement interfaces (`ITicketChecker`, `INotifier`, `IScheduler`), making them testable and swappable. Wiring happens in `index.ts`.
+
+### Two-Phase Scraping
+
+`PuppeteerTicketChecker.check()` runs in two phases:
+
+1. **Phase 1 — Calendar scrape**: loads `/en/calendar`, reads FullCalendar's `data-date` cells and CSS classes (`fc-day-soldout`, `fc-day-holiday`, `fc-day-no-data`) to determine availability for each `TARGET_DATE`.
+2. **Phase 2 — Time slot scrape**: for each available date, clicks the month tab (`a.p-period__month`) to make that month visible, then Puppeteer-clicks the `a.fc-event` inside the date cell to open the time slot modal. Available slots (`.p-timelist__item:not(.cantSelect) .p-timelist__item--time`) are extracted and stored as `timeSlots: string[]` (e.g. `["16:00 - 16:30", "16:30 - 17:00"]`). No login is required — the modal is publicly accessible.
+
+The calendar is reloaded between dates to reset SPA state.
 
 ### Puppeteer with System Chromium
 In the container environment, Puppeteer uses the system-installed Chromium (`/usr/bin/chromium`) instead of downloading its own. This is controlled by:
